@@ -1,9 +1,38 @@
 <?php
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $num_addresses = isset($_POST['num_addresses']) ? intval($_POST['num_addresses']) : 0;
-} else {
-    // Redirection si la page est accédée directement sans soumission du formulaire initial
+session_start();
+if (isset($_SESSION['result-form'])) {
+    var_dump($_SESSION['result-form']);
+}
+// Récupérer le nombre d'adresses depuis la session
+$num_addresses = isset($_SESSION["num_addresses"]) ? $_SESSION["num_addresses"] : 0;
+
+// Vérifier si le nombre d'adresses est valide
+if ($num_addresses <= 0) {
     header("Location: index.php");
+    exit();
+}
+
+// Collecter les adresses à partir des données POST et les stocker dans la session
+$addresses = array();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    
+    $_SESSION['result-form']=$_POST;
+    for ($i = 1; $i <= $num_addresses; $i++) {
+        $addresses[] = array(
+            'street' => $_POST['street_' . $i],
+            'street_nb' => $_POST['street_nb_' . $i],
+            'type' => $_POST['type_' . $i],
+            'city' => $_POST['city_' . $i],
+            'zipcode' => $_POST['zipcode_' . $i],
+        );
+    }
+
+    // Stocker les adresses dans la session
+    $_SESSION['addresses'] = $addresses;
+
+    // Rediriger vers confirmation.php
+    header("Location: confirmation.php");
     exit();
 }
 ?>
@@ -14,30 +43,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
-    <title>Adresses</title>
+    <link rel="stylesheet" href="index.css">
+    <title>Formulaire d'Adresse</title>
 </head>
 
 <body>
     <div class="container">
-        <form action="submit.php" method="post">
+        <form action="second.php" method="post">
             <?php for ($i = 1; $i <= $num_addresses; $i++): ?>
             <h2>Adresse <?php echo $i; ?></h2>
             <label for="street_<?php echo $i; ?>">Street:</label>
-            <input type="text" name="street_<?php echo $i; ?>" maxlength="50" required>
+            <input type="text" name="street_<?php echo $i; ?>" maxlength="50"
+    value="<?php echo isset($_SESSION['result-form']['street_' . $i]) ? $_SESSION['result-form']['street_' . $i] : ''; ?>">
 
             <label for="street_nb_<?php echo $i; ?>">Street Number:</label>
-            <input type="number" name="street_nb_<?php echo $i; ?>" required>
+            <input type="number" name="street_nb_<?php echo $i; ?>"
+            value="<?php echo isset($_SESSION['result-form']['street_nb_' . $i]) ? $_SESSION['result-form']['street_nb_' . $i] : ''; ?>">
 
             <label for="type_<?php echo $i; ?>">Type:</label>
-            <select name="type_<?php echo $i; ?>" required>
+            <select name="type_<?php echo $i; ?>" value="<?php echo isset($_SESSION['result-form']['type_' . $i]) ? $_SESSION['result-form']['type_' . $i] : ''; ?>">
                 <option value="livraison">Livraison</option>
                 <option value="facturation">Facturation</option>
                 <option value="autre">Autre</option>
             </select>
 
             <label for="city_<?php echo $i; ?>">City:</label>
-            <select name="city_<?php echo $i; ?>" required>
+            <select name="city_<?php echo $i; ?>"value="<?php echo isset($_SESSION['result-form']['city_' . $i]) ? $_SESSION['result-form']['city_' . $i] : ''; ?>">
                 <option value="Montreal">Montreal</option>
                 <option value="Laval">Laval</option>
                 <option value="Toronto">Toronto</option>
@@ -45,7 +76,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </select>
 
             <label for="zipcode_<?php echo $i; ?>">ZIP Code:</label>
-            <input type="text" name="zipcode_<?php echo $i; ?>" maxlength="6" required>
+            <input type="text" name="zipcode_<?php echo $i; ?>" maxlength="6"
+            value="<?php echo isset($_SESSION['result-form']['zipcode_' . $i]) ? $_SESSION['result-form']['zipcode_' . $i] : ''; ?>">
 
             <?php endfor; ?>
 

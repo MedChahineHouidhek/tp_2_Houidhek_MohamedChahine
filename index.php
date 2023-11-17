@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Stocker le nombre d'adresses dans la session
     $_SESSION['num_addresses'] = $num_addresses;
 
-    // Redirection vers le formulaire d'adresse
+    
     header("Location: second.php");
     exit();
 }

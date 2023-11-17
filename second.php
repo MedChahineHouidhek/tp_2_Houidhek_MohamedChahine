@@ -6,7 +6,7 @@ if (isset($_SESSION['result-form'])) {
 // Récupérer le nombre d'adresses depuis la session
 $num_addresses = isset($_SESSION["num_addresses"]) ? $_SESSION["num_addresses"] : 0;
 
-// Vérifier si le nombre d'adresses est valide
+
 if ($num_addresses <= 0) {
     header("Location: index.php");
     exit();
@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Stocker les adresses dans la session
     $_SESSION['addresses'] = $addresses;
 
-    // Rediriger vers confirmation.php
+  
     header("Location: confirmation.php");
     exit();
 }

@@ -21,10 +21,10 @@ function addAddressesToDB($addresses) {
         $city = $address['city'];
         $zipcode = $address['zipcode'];
 
-        // Exécution de la requête
+        
         $result = mysqli_stmt_execute($stmt);
 
-        // Vérification des erreurs
+       
         if (!$result) {
             die("Erreur d'exécution de la requête: " . mysqli_error($conn));
         }
